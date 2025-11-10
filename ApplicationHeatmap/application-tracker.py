@@ -133,4 +133,4 @@ def draw_interactive_grid(counts, output_path="interactive_grid.html"):
 if __name__ == "__main__":
     applications = get_applications()
     daily_counts = count_per_day(applications)
-    draw_interactive_grid(daily_counts)
+    draw_interactive_grid(daily_counts, output_path="ApplicationHeatmap/interactive_grid.html")
