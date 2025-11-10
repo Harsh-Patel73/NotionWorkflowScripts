@@ -42,7 +42,7 @@ jobs:
 
         # 6. Deploy HTML to GitHub Pages
       - name: Deploy interactive grid to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v6
+        uses: peaceiris/actions-gh-pages@v5
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./interactive_grid.html
