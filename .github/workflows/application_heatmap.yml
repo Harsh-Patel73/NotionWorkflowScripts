@@ -35,10 +35,14 @@ jobs:
         run: |
           python your_script_name.py
 
-      # 5. Upload HTML artifact (updated to v4)
+      # 5. Upload HTML artifact (diagnostic test)
       - name: Upload HTML artifact
+        run: |
+          echo "Debugging action version..."
+          cat $GITHUB_ACTION_PATH || true
+        shell: bash
+      - name: Upload HTML artifact (actual)
         uses: actions/upload-artifact@9b6f465fbbcccfb8c67ceae6c0a88c47c2b8f953 # v4.3.0
-
         with:
           name: interactive-grid
           path: interactive_grid.html
