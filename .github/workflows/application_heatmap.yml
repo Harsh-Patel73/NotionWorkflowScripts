@@ -1,9 +1,9 @@
 name: Run Notion Job Tracker Script
 
 on:
-  workflow_dispatch:
   schedule:
-    - cron: '0 9 * * *'
+    - cron: '0 9 * * *'   # daily at 9:00 AM UTC
+  workflow_dispatch:       # optional manual trigger
 
 jobs:
   build:
@@ -14,7 +14,7 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      # 2. Set up Python
+      # 2. Set up Python 3.11
       - name: Set up Python 3.11
         uses: actions/setup-python@v5
         with:
@@ -26,7 +26,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install requests python-dotenv plotly
 
-      # 4. Run your Notion script
+      # 4. Run Notion script
       - name: Run Notion script
         env:
           NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
@@ -34,15 +34,22 @@ jobs:
         run: |
           python ApplicationHeatmap/application-tracker.py
 
-      - name: Upload HTML artifact (actual)
+      # 5. Prepare deploy folder for GitHub Pages
+      - name: Prepare deploy folder
+        run: |
+          mkdir -p deploy
+          cp ApplicationHeatmap/interactive_grid.html deploy/index.html
+
+      # 6. Upload HTML artifact (optional, for debugging)
+      - name: Upload HTML artifact
         uses: actions/upload-artifact@v4
         with:
           name: interactive-grid
-          path: interactive_grid.html
+          path: deploy/index.html
 
-        # 6. Deploy HTML to GitHub Pages
+      # 7. Deploy to GitHub Pages
       - name: Deploy interactive grid to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./interactive_grid.html
+          publish_dir: ./deploy
