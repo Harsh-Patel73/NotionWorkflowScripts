@@ -2,7 +2,7 @@ name: Daily Application Heatmap
 
 on:
   schedule:
-    - cron: '0 12 * * *'  # runs daily at 12:00 UTC
+    - cron: '0 12 * * *'  # runs every day at 12:00 UTC
   workflow_dispatch:      # allows manual runs
 
 jobs:
@@ -10,11 +10,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1️⃣ Checkout full repo history
+      # 1️⃣ Checkout repo
       - name: Checkout repo
         uses: actions/checkout@v3
-        with:
-          fetch-depth: 0  # full history required for pull/rebase
 
       # 2️⃣ Set up Python
       - name: Set up Python
@@ -28,17 +26,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install requests python-dotenv plotly
 
-      # 4️⃣ Pull latest remote changes (rebase)
-      - name: Pull latest main
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_Token }}
-        run: |
-          git config user.name "GitHub Actions"
-          git config user.email "actions@github.com"
-          git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git
-          git pull origin main --rebase || echo "Nothing to pull"
-
-      # 5️⃣ Run your script to generate the grid
+      # 4️⃣ Run ApplicationHeatmap script
       - name: Run ApplicationHeatmap script
         env:
           NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
@@ -47,19 +35,23 @@ jobs:
           cd ApplicationHeatmap
           python application-tracker.py
 
-      # 6️⃣ Commit and push updated grid
+      # 5️⃣ Commit & push interactive grid (overwrite previous)
       - name: Commit and push interactive grid
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_Token }}
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
           cd ApplicationHeatmap
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
+          git checkout main
+          git pull https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }} main --rebase
           git add interactive_grid.html
           git commit -m "Update interactive grid [skip ci]" || echo "No changes to commit"
-          git push origin main
+          git push https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }} main
 
-      # 7️⃣ Upload as artifact (optional)
+      # 6️⃣ Upload interactive grid artifact (optional)
       - name: Upload interactive grid artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: interactive-grid
           path: ApplicationHeatmap/interactive_grid.html
