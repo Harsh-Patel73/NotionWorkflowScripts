@@ -1,11 +1,10 @@
-name: Application Heatmap Run
+name: Run Notion Job Tracker Script
 
-# Trigger workflow on push to main branch
 on:
   push:
     branches:
       - main
-  workflow_dispatch: # allows manual triggering
+  workflow_dispatch:
 
 jobs:
   build:
@@ -14,11 +13,11 @@ jobs:
     steps:
       # 1. Checkout the repository
       - name: Checkout repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       # 2. Set up Python
       - name: Set up Python 3.11
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
@@ -28,7 +27,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install requests python-dotenv plotly
 
-      # 4. Run your script
+      # 4. Run your Notion script
       - name: Run Notion script
         env:
           NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
@@ -36,9 +35,9 @@ jobs:
         run: |
           python your_script_name.py
 
-      # 5. Upload the artifact
+      # 5. Upload HTML artifact (updated to v4)
       - name: Upload HTML artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: interactive-grid
           path: interactive_grid.html
