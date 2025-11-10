@@ -32,11 +32,14 @@ jobs:
           python application-tracker.py
 
       - name: Commit and push updated HTML
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
           cd ApplicationHeatmap
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
           git add interactive_grid.html
           git diff --cached --quiet || git commit -m "Update interactive grid [skip ci]"
+          git remote set-url origin https://x-access-token:${GH_TOKEN}@github.com/Harsh-Patel73/NotionWorkflowScripts.git
           git push origin main
 
