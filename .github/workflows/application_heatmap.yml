@@ -1,0 +1,44 @@
+name: Application Heatmap Run
+
+# Trigger workflow on push to main branch
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch: # allows manual triggering
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Checkout the repository
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      # 2. Set up Python
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      # 3. Install dependencies
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests python-dotenv plotly
+
+      # 4. Run your script
+      - name: Run Notion script
+        env:
+          NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
+          NOTION_DATABASE_ID: ${{ secrets.NOTION_DATABASE_ID }}
+        run: |
+          python your_script_name.py
+
+      # 5. Upload the artifact
+      - name: Upload HTML artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: interactive-grid
+          path: interactive_grid.html
