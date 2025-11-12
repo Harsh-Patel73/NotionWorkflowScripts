@@ -37,6 +37,8 @@ def get_applications():
     return all_results
 
 # Count applications per day
+from dateutil.parser import isoparse
+
 def count_per_day(applications):
     counts = {}
     for app in applications:
@@ -44,9 +46,11 @@ def count_per_day(applications):
         date_field = props.get("Date Applied", {}).get("date")
         if not date_field:
             continue
-        date_str = date_field["start"]
+        # Convert ISO timestamp to date only
+        date_str = isoparse(date_field["start"]).date().isoformat()
         counts[date_str] = counts.get(date_str, 0) + 1
     return counts
+
 
 # Draw interactive grid
 def draw_interactive_grid(counts, output_path="ApplicationHeatmap/interactive_grid.html"):
