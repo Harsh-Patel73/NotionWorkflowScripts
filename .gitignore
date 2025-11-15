@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.db
+
+# Environments
+.env
+venv/
+.venv/
+
+# VS Code
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Build artifacts
+deploy/
+build/
+dist/
+
+# GitHub Pages output (if you generate files locally)
+ApplicationHeatmap/interactive_grid.html
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Secrets (important!)
+*.env
+notion_token.txt
