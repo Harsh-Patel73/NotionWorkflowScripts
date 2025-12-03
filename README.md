@@ -1,1 +1,1 @@
-This repository contains Python scripts designed to integrate with Notion, allowing you to automate page updates, manage databases efficiently, and add visuals or custom content programmatically. Perfect for anyone looking to optimize their Notion workspace with code-driven workflows.
+
